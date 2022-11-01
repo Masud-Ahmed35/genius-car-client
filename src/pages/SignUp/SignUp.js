@@ -2,9 +2,12 @@ import React, { useContext } from 'react';
 import { Form, Link } from 'react-router-dom';
 import loginImage from '../../assets/images/login/login.svg'
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
+import { FaFacebook, FaGoogle, FaGithub } from "react-icons/fa";
+import { GoogleAuthProvider } from 'firebase/auth';
 
 const SignUp = () => {
-    const { createUser } = useContext(AuthContext);
+    const { createUser, googleSignIn } = useContext(AuthContext);
+    const googleProvider = new GoogleAuthProvider();
 
     const handleSignUp = event => {
         event.preventDefault();
@@ -16,10 +19,20 @@ const SignUp = () => {
 
         createUser(email, password)
             .then(result => {
-                const user = result.user;
-                console.log(user);
+                console.log(result.user);
             })
             .catch(err => console.error(err));
+    }
+
+    const handleGoogleSignIn = () => {
+        googleSignIn(googleProvider)
+            .then(result => {
+                console.log(result.user);
+                alert('Logged In With Google');
+            })
+            .catch(err => {
+                console.error(err);
+            })
     }
 
     return (
@@ -50,10 +63,18 @@ const SignUp = () => {
                             <input type="password" name='password' placeholder="********" className="input input-bordered" required />
                         </div>
                         <div className="form-control mt-6">
-                            <input className="btn btn-success text-slate-900 normal-case text-lg font-semibold" type="submit" value="Sign Up" />
+                            <input className="btn btn-success text-slate-900 normal-case text-xl font-semibold" type="submit" value="Sign Up" />
                         </div>
                     </Form>
-                    <p className='text-center text-lg'>Already have an account? <Link to='/login' className='text-orange-600 font-semibold'>Login</Link></p>
+                    <div>
+                        <p className='text-base font-medium text-center'>Or Sign Up With</p>
+                        <div className='flex justify-center items-center text-5xl my-4'>
+                            <FaGoogle onClick={handleGoogleSignIn} className='bg-gray-100 rounded-full p-3 text-zinc-700' />
+                            <FaFacebook className='mx-7 bg-gray-100 rounded-full p-3 text-blue-600' />
+                            <FaGithub className='bg-gray-100 rounded-full p-3' />
+                        </div>
+                    </div>
+                    <p className='text-center text-base'>Already have an account? <Link to='/login' className='text-orange-600 font-bold'>Login</Link></p>
                 </div>
             </div>
         </div>

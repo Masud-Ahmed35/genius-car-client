@@ -1,11 +1,37 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Form, Link } from 'react-router-dom';
 import loginImage from '../../assets/images/login/login.svg'
+import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
+import { FaFacebook, FaGoogle, FaGithub } from "react-icons/fa";
+import { GoogleAuthProvider } from 'firebase/auth';
 
 const Login = () => {
 
+    const { signIn, googleSignIn } = useContext(AuthContext);
+    const googleProvider = new GoogleAuthProvider();
+
     const handleLogin = event => {
         event.preventDefault();
+        const form = event.target;
+        const email = form.email.value;
+        const password = form.password.value;
+
+        signIn(email, password)
+            .then(result => {
+                console.log(result.user);
+            })
+            .catch(err => console.error(err));
+    }
+
+    const handleGoogleSignIn = () => {
+        googleSignIn(googleProvider)
+            .then(result => {
+                console.log(result.user);
+                alert('Logged In With Google');
+            })
+            .catch(err => {
+                console.error(err);
+            })
     }
 
     return (
@@ -16,7 +42,7 @@ const Login = () => {
                 </div>
                 <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-700 py-10 border">
                     <h1 className="text-5xl text-center font-bold mb-3 text-orange-600">Login</h1>
-                    <from onSubmit={handleLogin} className="card-body">
+                    <Form onSubmit={handleLogin} className="card-body">
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text text-lg font-semibold">Email</span>
@@ -27,16 +53,24 @@ const Login = () => {
                             <label className="label">
                                 <span className="label-text text-lg font-semibold">Password</span>
                             </label>
-                            <input type="text" name='password' placeholder="********" className="input input-bordered" required />
+                            <input type="password" name='password' placeholder="********" className="input input-bordered" required />
                             <label className="label">
                                 <Link className="label-text-alt link link-hover">Forgot password?</Link>
                             </label>
                         </div>
                         <div className="form-control mt-6">
-                            <input className="btn btn-success text-slate-900 normal-case text-lg font-semibold" type="submit" value="Login" />
+                            <input className="btn btn-success text-slate-900 normal-case text-xl font-semibold" type="submit" value="Login" />
                         </div>
-                    </from>
-                    <p className='text-center text-lg'>Have an account? <Link to='/signup' className='text-orange-600 font-semibold'>Sign Up</Link></p>
+                    </Form>
+                    <div>
+                        <p className='text-base font-medium text-center'>Or Sign Up With</p>
+                        <div className='flex justify-center items-center text-5xl my-4'>
+                            <FaGoogle onClick={handleGoogleSignIn} className='bg-gray-100 rounded-full p-3 text-zinc-700' />
+                            <FaFacebook className='mx-7 bg-gray-100 rounded-full p-3 text-blue-600' />
+                            <FaGithub className='bg-gray-100 rounded-full p-3' />
+                        </div>
+                    </div>
+                    <p className='text-center text-base'>Have an account? <Link to='/signup' className='text-orange-600 font-bold'>Sign Up</Link></p>
                 </div>
             </div>
         </div>
