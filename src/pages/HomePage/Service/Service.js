@@ -1,8 +1,9 @@
 import React from 'react';
 import { HiArrowNarrowRight } from "react-icons/hi";
+import { Link } from 'react-router-dom';
 
 const Service = ({ service }) => {
-    const { img, title, price } = service;
+    const { _id, img, title, price } = service;
 
     return (
         <div className="card card-compact w-96 bg-base-100 shadow-xl">
@@ -11,7 +12,9 @@ const Service = ({ service }) => {
                 <h2 className="card-title font-bold text-2xl">{title}</h2>
                 <div className='text-orange-600  flex justify-between'>
                     <p className='font-semibold text-xl'>Price: ${price}</p>
-                    <HiArrowNarrowRight className='font-semibold text-2xl'></HiArrowNarrowRight>
+                    <Link to={`/checkout/${_id}`}>
+                        <HiArrowNarrowRight className='font-semibold text-2xl'></HiArrowNarrowRight>
+                    </Link>
                 </div>
             </div>
         </div>

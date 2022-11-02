@@ -6,11 +6,11 @@ import { AuthContext } from '../../../contexts/AuthProvider/AuthProvider';
 const Header = () => {
     const { user, logOut } = useContext(AuthContext);
 
-
     const handleLogOut = () => {
         logOut()
             .then(() => {
                 alert('Log Out Successful');
+                return;
             })
             .catch(err => {
                 console.error(err);
@@ -22,10 +22,11 @@ const Header = () => {
         <div>
             {
                 user?.uid ?
-
-                    <li className='font-semibold text-xl  border-4 rounded-xl'><NavLink onClick={handleLogOut} className='bg-white text-black btn btn-ghost normal-case'>Log Out</NavLink></li>
+                    <div className='flex mr-5'>
+                        <li className='font-semibold text-xl'><NavLink to='/orders' className='bg-white text-black btn btn-ghost normal-case'>Orders</NavLink></li>
+                        <li className='font-semibold text-xl  border-4 rounded-xl'><NavLink onClick={handleLogOut} className='bg-white text-black btn btn-ghost normal-case'>Log Out</NavLink></li>
+                    </div>
                     :
-
                     <li className='font-semibold text-xl'><NavLink to='/login' className='bg-white text-black btn btn-ghost normal-case'>Login</NavLink></li>
             }
         </div>
