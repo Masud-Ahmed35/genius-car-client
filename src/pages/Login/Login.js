@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Form, Link } from 'react-router-dom';
+import { Form, Link, useLocation, useNavigate } from 'react-router-dom';
 import loginImage from '../../assets/images/login/login.svg'
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
 import { FaFacebook, FaGoogle, FaGithub } from "react-icons/fa";
@@ -9,6 +9,10 @@ const Login = () => {
 
     const { signIn, googleSignIn } = useContext(AuthContext);
     const googleProvider = new GoogleAuthProvider();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const from = location.state?.from?.pathname || '/';
 
     const handleLogin = event => {
         event.preventDefault();
@@ -18,7 +22,29 @@ const Login = () => {
 
         signIn(email, password)
             .then(result => {
-                console.log(result.user);
+                const user = result.user;
+
+                const currentUser = {
+                    email: user.email
+                }
+                console.log(currentUser);
+
+                // Get JWT Token 
+                fetch(`http://localhost:7007/jwt`, {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(currentUser)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+
+                        localStorage.setItem('genius-token', data.token);
+
+                        navigate(from, { replace: true });
+                    })
             })
             .catch(err => console.error(err));
     }
@@ -28,6 +54,7 @@ const Login = () => {
             .then(result => {
                 console.log(result.user);
                 alert('Logged In With Google');
+                navigate(from, { replace: true });
             })
             .catch(err => {
                 console.error(err);
